@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="MAI Design Audit Tracker for documenting and tracking UI audit findings across Figma files.">
+  <title>MAI Design Audit Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <div class="hdr">
+    <div class="hdr-top">
+      <div class="hdr-left">
+        <div class="hdr-brand">MAI Stream · Design Ops · Audit Tracker</div>
+        <h1 id="header-title">[MAI] Maxxi Marketing+ <span>Tracker</span></h1>
+      </div>
+      <div class="hdr-actions">
+        <!-- View Toggles -->
+        <button class="hdr-btn hdr-btn-export" id="nav-dashboard" onclick="app.navigate('dashboard')" style="display: none;">
+          <i class="ph ph-squares-four"></i> Dashboard
+        </button>
+        <button class="hdr-btn hdr-btn-export" onclick="app.exportData()">⬇ Export JSON</button>
+        <label class="hdr-btn hdr-btn-export" style="cursor:pointer;">
+          <i class="ph ph-upload-simple"></i> Import JSON
+          <input type="file" id="import-json" accept=".json" style="display: none;" onchange="app.importData(event)">
+        </label>
+        <button class="hdr-btn hdr-btn-add" id="hdr-main-btn" onclick="app.openAuditModal()">＋ New Audit</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+    <!-- Dashboard View -->
+    <section id="view-dashboard" class="view active">
+      <div class="legend">
+        <div class="lg-item"><div class="lg-dot" style="background:var(--g500)"></div>Dashboard Overview</div>
+        <div class="lg-item" style="margin-left:auto;font-size:11px;color:var(--ink4);">💡 Click on an audit card to view findings</div>
+      </div>
+
+      <div class="dashboard-stats" id="dashboard-stats">
+        <!-- Stats populated by JS -->
+      </div>
+
+      <div class="audit-list" id="audit-list">
+        <!-- Audits populated by JS -->
+      </div>
+    </section>
+
+    <!-- Audit Detail View -->
+    <section id="view-audit-detail" class="view">
+      <div class="legend" style="margin-bottom: 24px; padding: 14px 16px;">
+        <span class="back-link" onclick="app.navigate('dashboard')">
+          <i class="ph ph-arrow-left"></i> Back to Dashboard
+        </span>
+        <div style="margin-left: auto; display: flex; gap: 8px;">
+          <button class="hdr-btn hdr-btn-export" style="background: white; color: var(--ink); border: 1px solid var(--bdr);" onclick="app.openAuditModal(app.currentAuditId)">
+            <i class="ph ph-pencil-simple"></i> Edit Audit Details
+          </button>
+          <button class="hdr-btn hdr-btn-add" onclick="app.openFindingModal()">
+            ＋ Add Finding
+          </button>
+        </div>
+      </div>
+
+      <div id="audit-header-info" class="file-card" style="margin-bottom: 24px;">
+        <!-- Populated by JS -->
+      </div>
+
+      <div class="findings-toolbar">
+        <div class="search-bar">
+          <i class="ph ph-magnifying-glass"></i>
+          <input type="text" id="search-input" placeholder="Search findings..." oninput="app.filterFindings()">
+        </div>
+        <div class="filters">
+          <select id="filter-category" onchange="app.filterFindings()">
+            <option value="all">All Categories</option>
+            <!-- Populated by JS -->
+          </select>
+          <select id="filter-status" onchange="app.filterFindings()">
+            <option value="all">All Statuses</option>
+            <option value="open">Open</option>
+            <option value="reviewed">Reviewed</option>
+            <option value="in_progress">In Progress</option>
+            <option value="resolved">Resolved</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="findings-list" id="findings-list">
+        <!-- Findings populated by JS -->
+      </div>
+    </section>
+  </div>
+
+  <!-- Modals -->
+  <div class="overlay" id="audit-modal-overlay">
+    <div class="modal">
+      <h3 id="audit-modal-title">New Audit</h3>
+      <form id="audit-form" onsubmit="app.saveAudit(event)">
+        <input type="hidden" id="audit-id">
+        <div class="mf">
+          <div class="ml">Audit Title *</div>
+          <input class="mi" type="text" id="audit-title" required placeholder="e.g. MM+ Aktivitas Promosi FA Audit">
+        </div>
+        <div style="display:flex; gap:12px;">
+          <div class="mf" style="flex:1;">
+            <div class="ml">Stream *</div>
+            <input class="mi" type="text" id="audit-stream" required placeholder="e.g. MAI">
+          </div>
+          <div class="mf" style="flex:1;">
+            <div class="ml">Platform *</div>
+            <input class="mi" type="text" id="audit-platform" required placeholder="e.g. Tablet">
+          </div>
+        </div>
+        <div style="display:flex; gap:12px;">
+          <div class="mf" style="flex:1;">
+            <div class="ml">File Name *</div>
+            <input class="mi" type="text" id="audit-filename" required>
+          </div>
+          <div class="mf" style="flex:1;">
+            <div class="ml">Reviewer *</div>
+            <input class="mi" type="text" id="audit-reviewer" required>
+          </div>
+        </div>
+        <div class="mf">
+          <div class="ml">Figma URL (Optional)</div>
+          <input class="mi" type="url" id="audit-figma-url" placeholder="https://www.figma.com/file/...">
+        </div>
+        <div class="mf">
+          <div class="ml">Summary</div>
+          <textarea class="mi" id="audit-summary" rows="3" placeholder="Brief context about this audit..." style="resize:vertical;"></textarea>
+        </div>
+        <div class="m-btns">
+          <button type="button" class="m-cancel" onclick="app.closeModal('audit-modal-overlay')">Cancel</button>
+          <button type="submit" class="m-add">Save Audit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="overlay" id="finding-modal-overlay">
+    <div class="modal" style="width: 600px;">
+      <h3 id="finding-modal-title">New Finding</h3>
+      <form id="finding-form" onsubmit="app.saveFinding(event)">
+        <input type="hidden" id="finding-id">
+        <div class="mf">
+          <div class="ml">Finding Title *</div>
+          <input class="mi" type="text" id="finding-title" required placeholder="e.g. Bottom action bar repeated in multiple flows">
+        </div>
+        
+        <div style="display:flex; gap:12px;">
+          <div class="mf" style="flex:1;">
+            <div class="ml">Category *</div>
+            <select class="mi" id="finding-category" required>
+              <option value="local component">Local Component</option>
+              <option value="master/ui kit usage">Master/UI Kit Usage</option>
+              <option value="cross-file dependency">Cross-file Dependency</option>
+              <option value="plain element extraction opportunity">Plain Element Extraction Opportunity</option>
+              <option value="missing component reuse">Missing Component Reuse</option>
+              <option value="inconsistency">Inconsistency</option>
+              <option value="legacy large component">Legacy Large Component</option>
+              <option value="deep clicking issue">Deep Clicking Issue</option>
+              <option value="nested property issue">Nested Property Issue</option>
+              <option value="documentation gap">Documentation Gap</option>
+            </select>
+          </div>
+          <div class="mf" style="flex:1;">
+            <div class="ml">Component Level</div>
+            <select class="mi" id="finding-level">
+              <option value="token">Token</option>
+              <option value="atomic">Atomic</option>
+              <option value="compound">Compound</option>
+              <option value="pattern">Pattern</option>
+              <option value="template">Template</option>
+              <option value="page">Page</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="mf">
+          <div class="ml">Description</div>
+          <textarea class="mi" id="finding-desc" rows="2" placeholder="Describe the issue or opportunity..."></textarea>
+        </div>
+
+        <div style="display:flex; gap:12px;">
+          <div class="mf" style="flex:1;">
+            <div class="ml">Recommendation</div>
+            <select class="mi" id="finding-recommendation">
+              <option value="keep local">Keep Local</option>
+              <option value="extract to ui kit">Extract to UI Kit</option>
+              <option value="extract to design system">Extract to Design System</option>
+              <option value="merge with existing component">Merge with existing component</option>
+              <option value="refactor nested properties">Refactor nested properties</option>
+              <option value="replace with existing component">Replace with existing component</option>
+              <option value="no action yet">No action yet</option>
+            </select>
+          </div>
+          <div class="mf" style="flex:1;">
+            <div class="ml">Status</div>
+            <select class="mi" id="finding-status">
+              <option value="open">Open</option>
+              <option value="reviewed">Reviewed</option>
+              <option value="proposed">Proposed</option>
+              <option value="in_progress">In Progress</option>
+              <option value="resolved">Resolved</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:12px;">
+          <div class="mf" style="flex:1;">
+            <div class="ml">Priority</div>
+            <select class="mi" id="finding-priority">
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+              <option value="critical">Critical</option>
+            </select>
+          </div>
+          <div class="mf" style="flex:1;">
+            <div class="ml">Severity</div>
+            <select class="mi" id="finding-severity">
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="mf">
+          <div class="ml">Figma URL / Node Reference (Optional)</div>
+          <input class="mi" type="url" id="finding-figma-url" placeholder="https://figma.com/file/...?node-id=...">
+        </div>
+        <div class="mf">
+          <div class="ml">Notes</div>
+          <textarea class="mi" id="finding-notes" rows="2"></textarea>
+        </div>
+
+        <div class="m-btns">
+          <button type="button" class="m-cancel" onclick="app.closeModal('finding-modal-overlay')">Cancel</button>
+          <button type="submit" class="m-add">Save Finding</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
