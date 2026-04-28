@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Behavior & Governance Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Custom styles for Governance Board */
+    .gov-grid {
+      display: grid;
+      grid-template-columns: 350px 1fr;
+      gap: 32px;
+      margin-top: 24px;
+      align-items: start;
+    }
+    
+    .panel {
+      background: var(--white);
+      border: 1px solid var(--bdr);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.02);
+    }
+
+    .panel-title {
+      font-family: var(--display);
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--ink);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 2px solid var(--bdr);
+      padding-bottom: 12px;
+    }
+
+    /* Candidate Cards */
+    .candidate-card {
+      background: rgba(244, 250, 240, 0.4);
+      border: 1px solid var(--bdr);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      border-left: 4px solid var(--purple);
+    }
+
+    .cc-title {
+      font-family: var(--sans);
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+
+    .cc-desc {
+      font-size: 13px;
+      color: var(--ink3);
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    .cc-meta {
+      display: flex;
+      gap: 8px;
+      font-size: 11px;
+      font-family: var(--mono);
+    }
+    
+    .cc-tag {
+      background: var(--white);
+      border: 1px solid var(--bdr);
+      padding: 4px 8px;
+      border-radius: 6px;
+      color: var(--ink2);
+    }
+
+    .cc-status {
+      background: var(--purple-pale);
+      color: var(--purple);
+      border-color: rgba(120,80,200,0.2);
+    }
+
+    /* Behavior Metrics */
+    .metric-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .metric-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      background: var(--g50);
+      border-radius: 8px;
+      border: 1px solid var(--bdr);
+    }
+    
+    .metric-label {
+      font-weight: 500;
+      color: var(--ink2);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .metric-val {
+      font-family: var(--mono);
+      font-weight: 600;
+      color: var(--ink);
+      background: var(--white);
+      padding: 2px 8px;
+      border-radius: 12px;
+      border: 1px solid var(--bdr);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <div class="hdr">
+    <div class="hdr-top">
+      <div class="hdr-left">
+        <div class="hdr-brand">MAI Stream · Design Ops</div>
+        <h1 id="header-title">Behavior & <span>Governance</span></h1>
+      </div>
+      <div class="hdr-actions">
+        <a href="index.html" class="hdr-btn hdr-btn-export" style="text-decoration: none;">
+          <i class="ph ph-squares-four"></i> Tracker
+        </a>
+        <a href="action-plan.html" class="hdr-btn hdr-btn-export" style="text-decoration: none;">
+          <i class="ph ph-kanban"></i> Action Plan
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="main" style="max-width: 1400px;">
+    
+    <div class="legend" style="margin-bottom: 24px;">
+      <div class="lg-item"><i class="ph ph-users"></i> This dashboard bridges file audit data with designer behavior to inform component promotion.</div>
+    </div>
+
+    <div class="gov-grid">
+      
+      <!-- Left Column: Behavior Insights -->
+      <div style="display: flex; flex-direction: column; gap: 24px;">
+        <div class="panel">
+          <h2 class="panel-title"><i class="ph ph-brain"></i> Extracted Behavior Patterns</h2>
+          <p style="font-size: 13px; color: var(--ink3); margin-bottom: 16px;">Auto-detected from file audit categories and pain points.</p>
+          
+          <div class="metric-list" id="behavior-metrics">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <div class="panel" style="background: var(--blue-pale); border-color: rgba(80,160,240,0.2);">
+          <h2 class="panel-title" style="color: var(--blue); border-bottom-color: rgba(80,160,240,0.2);"><i class="ph ph-user-circle-plus"></i> Log Interview</h2>
+          <p style="font-size: 13px; color: var(--ink2); margin-bottom: 16px;">Document a 1:1 sync with a Product Designer to understand workflow blocks.</p>
+          <button class="hdr-btn hdr-btn-add" style="width: 100%; justify-content: center;" onclick="alert('Interview logging modal coming soon!')">＋ New PD Interview</button>
+        </div>
+      </div>
+
+      <!-- Right Column: Governance Board -->
+      <div class="panel">
+        <h2 class="panel-title"><i class="ph ph-arrows-up-down"></i> Component Promotion Candidates</h2>
+        <p style="font-size: 14px; color: var(--ink3); margin-bottom: 24px;">
+          These local components and patterns have been flagged in audits for extraction. Review these candidates before promoting them to the Project UI Kit or Core Design System.
+        </p>
+
+        <div id="candidates-list" style="display: flex; flex-direction: column; gap: 12px;">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/idb-keyval@6/dist/umd.js"></script>
+  <script>
+    async function loadGovernanceData() {
+      let data = { audits: [] };
+      
+      try {
+        const saved = await idbKeyval.get('mai_audit_data');
+        if (saved && saved.audits && saved.audits.length > 0) {
+          data = saved;
+        }
+      } catch (e) { console.error(e); }
+
+      if (!data.audits || data.audits.length === 0) {
+        try {
+          const res = await fetch('mai-audit-data.json');
+          if (res.ok) data = await res.json();
+        } catch (e) { console.error("Fallback JSON failed"); }
+      }
+
+      processGovernance(data);
+    }
+
+    function processGovernance(data) {
+      const candidates = [];
+      const behaviorCounts = {
+        'Plain Element Usage': 0,
+        'Missing Reuse (Adoption Issue)': 0,
+        'Deep Clicking / Usability Debt': 0,
+        'Cross-file Dependency': 0
+      };
+
+      data.audits.forEach(audit => {
+        const projName = audit.projectName || 'MM+';
+        
+        audit.findings.forEach(f => {
+          const cat = f.category ? f.category.toLowerCase() : '';
+          const rec = f.recommendation ? f.recommendation.toLowerCase() : '';
+          
+          // Tally Behaviors
+          if (cat.includes('plain element')) behaviorCounts['Plain Element Usage']++;
+          if (cat.includes('missing') || cat.includes('governance')) behaviorCounts['Missing Reuse (Adoption Issue)']++;
+          if (cat.includes('deep clicking') || cat.includes('usability')) behaviorCounts['Deep Clicking / Usability Debt']++;
+          if (cat.includes('cross-file')) behaviorCounts['Cross-file Dependency']++;
+
+          // Extract Candidates (anything recommended for extraction/promotion)
+          if ((rec.includes('extract') || rec.includes('promote') || rec.includes('system') || rec.includes('kit')) && f.status !== 'resolved') {
+            candidates.push({
+              ...f,
+              project: projName,
+              sourceFile: audit.fileName
+            });
+          }
+        });
+      });
+
+      renderBehavior(behaviorCounts);
+      renderCandidates(candidates);
+    }
+
+    function renderBehavior(counts) {
+      const list = document.getElementById('behavior-metrics');
+      list.innerHTML = '';
+      
+      const icons = {
+        'Plain Element Usage': 'ph-shapes',
+        'Missing Reuse (Adoption Issue)': 'ph-warning-circle',
+        'Deep Clicking / Usability Debt': 'ph-mouse-left-click',
+        'Cross-file Dependency': 'ph-link-break'
+      };
+
+      Object.entries(counts).forEach(([label, count]) => {
+        if (count > 0) {
+          list.innerHTML += `
+            <div class="metric-item">
+              <div class="metric-label"><i class="ph ${icons[label]}"></i> ${label}</div>
+              <div class="metric-val">${count} instances</div>
+            </div>
+          `;
+        }
+      });
+      
+      if (list.innerHTML === '') {
+        list.innerHTML = '<div style="color:var(--ink4); font-size:13px; padding:12px;">No specific behavior patterns detected yet.</div>';
+      }
+    }
+
+    function renderCandidates(candidates) {
+      const list = document.getElementById('candidates-list');
+      list.innerHTML = '';
+      
+      if (candidates.length === 0) {
+        list.innerHTML = '<div style="color:var(--ink4); padding: 20px; text-align: center; border: 1px dashed var(--bdr); border-radius: 12px;">No pending candidates for promotion!</div>';
+        return;
+      }
+
+      // Sort by priority (high first)
+      const prioWeight = { 'high': 3, 'medium': 2, 'low': 1 };
+      candidates.sort((a, b) => (prioWeight[b.priority] || 0) - (prioWeight[a.priority] || 0));
+
+      candidates.forEach(c => {
+        let destination = "Needs Discussion";
+        if (c.recommendation.toLowerCase().includes('design system')) destination = "Promote to Shared System";
+        else if (c.recommendation.toLowerCase().includes('ui kit')) destination = "Promote to Project UI Kit";
+
+        list.innerHTML += `
+          <div class="candidate-card">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+              <div class="cc-title">${c.title}</div>
+              <span class="cc-tag" style="background: ${c.priority === 'high' ? 'var(--red-pale)' : 'var(--white)'}; color: ${c.priority === 'high' ? 'var(--red)' : 'var(--ink2)'};">
+                ${c.priority.toUpperCase()} PRIORITY
+              </span>
+            </div>
+            <div class="cc-desc">${c.description || 'No description provided.'}</div>
+            <div class="cc-meta">
+              <span class="cc-tag cc-status"><i class="ph ph-arrow-fat-lines-up"></i> ${destination}</span>
+              <span class="cc-tag"><i class="ph ph-folder"></i> ${c.project}</span>
+              <span class="cc-tag"><i class="ph ph-file-text"></i> ${c.sourceFile}</span>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', loadGovernanceData);
+  </script>
+</body>
+</html>

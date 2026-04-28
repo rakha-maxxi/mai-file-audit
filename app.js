@@ -56,19 +56,11 @@ const app = {
     if (saved) {
       this.data = saved;
     } else {
-      // Fallback: Fetch default data from mai-audit-data.json
-      try {
-        const response = await fetch('mai-audit-data.json');
-        if (response.ok) {
-          const defaultData = await response.json();
-          // The JSON already contains the full { audits: [...] } structure
-          this.data = defaultData;
-          this.saveData();
-        } else {
-          throw new Error('Network response was not ok');
-        }
-      } catch (e) {
-        console.warn("Could not load mai-audit-data.json fallback, starting empty.", e);
+      // Fallback: Use static data.js if available
+      if (window.STATIC_DATA) {
+        this.data = window.STATIC_DATA;
+        this.saveData();
+      } else {
         this.data = { audits: [] };
       }
     }
