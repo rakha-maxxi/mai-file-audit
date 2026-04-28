@@ -1,182 +1,12 @@
 // MAI Design Audit Tracker - App Logic (Updated to new UI)
-
-const SEED_DATA = {
-  id: "audit-mmplus-fa-001",
-  title: "MM+ Aktivitas Promosi FA Audit",
-  stream: "MAI",
-  platform: "Tablet",
-  fileName: "[MM+] Aktivitas Promosi FA",
-  figmaFileUrl: "https://figma.com/file/sample",
-  reviewer: "Rakha",
-  auditDate: "2026-04-27",
-  summary: "Audit for identifying local components, reused patterns, extraction opportunities, and UI kit alignment.",
-  status: "in_progress",
-  findings: [
-    {
-      id: "finding-f1",
-      title: "Contains components used locally",
-      description: "Found several components that are defined and used only within this local file.",
-      category: "local component",
-      componentLevel: "atomic",
-      recommendation: "keep local",
-      priority: "low",
-      severity: "low",
-      status: "open",
-      figmaUrl: "",
-      notes: ""
-    },
-    {
-      id: "finding-f2",
-      title: "Use component from another file",
-      description: "Using a header dashboard component from '📊 [MM+] Dashboard Monitoring', and a tab component from '💳 [MM+] Registration Flow (NPWP)'.",
-      category: "cross-file dependency",
-      componentLevel: "compound",
-      recommendation: "extract to ui kit",
-      priority: "medium",
-      severity: "medium",
-      status: "open",
-      figmaUrl: "",
-      notes: ""
-    },
-    {
-      id: "finding-f3",
-      title: "Use component from Master/UI Kit",
-      description: "Properly utilizing Tile Menu, Top app bars, buttons, note view, and activity card from the Master UI Kit.",
-      category: "master/ui kit usage",
-      componentLevel: "compound",
-      recommendation: "no action yet",
-      priority: "low",
-      severity: "low",
-      status: "resolved",
-      figmaUrl: "",
-      notes: "Good usage of existing kit."
-    },
-    {
-      id: "finding-f4-1",
-      title: "Text pairing extraction opportunity",
-      description: "Text pairing is used in many pages as plain elements instead of a reusable component.",
-      category: "plain element extraction opportunity",
-      componentLevel: "atomic",
-      recommendation: "extract to ui kit",
-      priority: "medium",
-      severity: "low",
-      status: "open",
-      figmaUrl: "",
-      notes: ""
-    },
-    {
-      id: "finding-f4-2",
-      title: "Chips filter and table cells extraction opportunity",
-      description: "Chips filter and table cells are used as plain elements.",
-      category: "plain element extraction opportunity",
-      componentLevel: "atomic",
-      recommendation: "extract to ui kit",
-      priority: "medium",
-      severity: "medium",
-      status: "open",
-      figmaUrl: "https://www.figma.com/design/6GkVnVU6qOrj7JrUQtzKh6/%F0%9F%94%8A--MM---Aktivitas-Promosi-FA?node-id=5573-54014&t=tYlIone8UUzVgR6Y-11",
-      notes: ""
-    },
-    {
-      id: "finding-f4-3",
-      title: "Bottom sheet extraction opportunity",
-      description: "Bottom sheet with various content used 3+ times as plain elements.",
-      category: "plain element extraction opportunity",
-      componentLevel: "compound",
-      recommendation: "extract to design system",
-      priority: "high",
-      severity: "medium",
-      status: "open",
-      figmaUrl: "https://www.figma.com/design/6GkVnVU6qOrj7JrUQtzKh6/%F0%9F%94%8A--MM---Aktivitas-Promosi-FA?node-id=4648-19625&t=tYlIone8UUzVgR6Y-11",
-      notes: "Needs slots for different content."
-    },
-    {
-      id: "finding-f4-4",
-      title: "Tab bar below App Bar extraction opportunity",
-      description: "The tab bar below the App Bar is used 3+ times. The tab itself is already a component.",
-      category: "plain element extraction opportunity",
-      componentLevel: "compound",
-      recommendation: "extract to ui kit",
-      priority: "medium",
-      severity: "medium",
-      status: "open",
-      figmaUrl: "https://www.figma.com/design/6GkVnVU6qOrj7JrUQtzKh6/%F0%9F%94%8A--MM---Aktivitas-Promosi-FA?node-id=4468-17179&t=tYlIone8UUzVgR6Y-11",
-      notes: ""
-    },
-    {
-      id: "finding-f4-5",
-      title: "Bottom action bar / CTA Approval bar extraction",
-      description: "Sticky bottom action/CTA Approval bar used 3+ times with many variants (form approval, CTA next/previous) but same layout.",
-      category: "plain element extraction opportunity",
-      componentLevel: "compound",
-      recommendation: "extract to ui kit",
-      priority: "high",
-      severity: "medium",
-      status: "open",
-      figmaUrl: "https://www.figma.com/design/6GkVnVU6qOrj7JrUQtzKh6/%F0%9F%94%8A--MM---Aktivitas-Promosi-FA?node-id=4793-31212&t=tYlIone8UUzVgR6Y-11",
-      notes: "Use slots or variants for left/right action combinations."
-    },
-    {
-      id: "finding-f4-6",
-      title: "State patterns extraction opportunity",
-      description: "Empty state, success state, and confirmation state patterns used 3+ times.",
-      category: "plain element extraction opportunity",
-      componentLevel: "pattern",
-      recommendation: "extract to design system",
-      priority: "high",
-      severity: "medium",
-      status: "open",
-      figmaUrl: "https://www.figma.com/design/6GkVnVU6qOrj7JrUQtzKh6/%F0%9F%94%8A--MM---Aktivitas-Promosi-FA?node-id=5953-42326&t=tYlIone8UUzVgR6Y-11",
-      notes: ""
-    },
-    {
-      id: "finding-f4-7",
-      title: "Pop up dialog extraction opportunity",
-      description: "Pop up dialogs are built as plain elements. Can be extracted as a new component.",
-      category: "plain element extraction opportunity",
-      componentLevel: "compound",
-      recommendation: "extract to ui kit",
-      priority: "high",
-      severity: "low",
-      status: "open",
-      figmaUrl: "",
-      notes: "Needs slots because the content varies."
-    },
-    {
-      id: "finding-f5",
-      title: "Not using existing table cell component",
-      description: "A table cell was built from scratch instead of using the already created table cell component.",
-      category: "missing component reuse",
-      componentLevel: "atomic",
-      recommendation: "replace with existing component",
-      priority: "medium",
-      severity: "medium",
-      status: "open",
-      figmaUrl: "https://www.figma.com/design/6GkVnVU6qOrj7JrUQtzKh6/%F0%9F%94%8A--MM---Aktivitas-Promosi-FA?node-id=9854-109935&t=tYlIone8UUzVgR6Y-11",
-      notes: "Already created table cell component here: https://www.figma.com/design/6GkVnVU6qOrj7JrUQtzKh6/%F0%9F%94%8A--MM---Aktivitas-Promosi-FA?node-id=7111-78680&t=tYlIone8UUzVgR6Y-11"
-    },
-    {
-      id: "finding-f6",
-      title: "Deep clicking problem in log component",
-      description: "To change indicator, PD has to double click the indicator layer to select it and change the attribute (earlier, center, latest).",
-      category: "deep clicking issue",
-      componentLevel: "atomic",
-      recommendation: "refactor nested properties",
-      priority: "medium",
-      severity: "low",
-      status: "open",
-      figmaUrl: "https://www.figma.com/design/6GkVnVU6qOrj7JrUQtzKh6/%F0%9F%94%8A--MM---Aktivitas-Promosi-FA?node-id=12496-90535&t=tYlIone8UUzVgR6Y-11",
-      notes: "We can use nested system instead to surface properties."
-    }
-  ]
-};
+// Data is now persisted in IndexedDB and falls back to mai-audit-data.json if empty
 
 const app = {
   data: { audits: [] },
   currentAuditId: null,
 
-  init() {
-    this.loadData();
+  async init() {
+    await this.loadData();
     this.bindDraftEvents();
     this.renderDashboard();
   },
@@ -205,18 +35,47 @@ const app = {
     }
   },
 
-  loadData() {
-    const saved = localStorage.getItem('mai_audit_data');
+  async loadData() {
+    let saved;
+    try {
+      saved = await idbKeyval.get('mai_audit_data');
+    } catch(e) { console.error("IDB error", e); }
+
+    // Migration from localStorage to IndexedDB if first time
+    if (!saved) {
+      const localStr = localStorage.getItem('mai_audit_data');
+      if (localStr) {
+        try { 
+          saved = JSON.parse(localStr); 
+          await idbKeyval.set('mai_audit_data', saved);
+          localStorage.removeItem('mai_audit_data');
+        } catch (e) {}
+      }
+    }
+
     if (saved) {
-      try { this.data = JSON.parse(saved); } catch (e) { this.data = { audits: [] }; }
+      this.data = saved;
     } else {
-      this.data.audits.push(SEED_DATA);
-      this.saveData();
+      // Fallback: Fetch default data from mai-audit-data.json
+      try {
+        const response = await fetch('mai-audit-data.json');
+        if (response.ok) {
+          const defaultData = await response.json();
+          // The JSON already contains the full { audits: [...] } structure
+          this.data = defaultData;
+          this.saveData();
+        } else {
+          throw new Error('Network response was not ok');
+        }
+      } catch (e) {
+        console.warn("Could not load mai-audit-data.json fallback, starting empty.", e);
+        this.data = { audits: [] };
+      }
     }
   },
 
   saveData() {
-    localStorage.setItem('mai_audit_data', JSON.stringify(this.data));
+    idbKeyval.set('mai_audit_data', this.data).catch(e => console.error("Failed saving to IDB", e));
   },
 
   navigate(view) {
@@ -264,41 +123,71 @@ const app = {
     list.innerHTML = '';
 
     if (this.data.audits.length === 0) {
-      list.innerHTML = '<p style="color:var(--ink4); padding: 40px;">No audits found. Create one to get started.</p>';
+      list.innerHTML = '<p style="color:var(--ink4); padding: 40px;">No projects or audits found. Create one to get started.</p>';
       return;
     }
 
+    // Group audits by project name
+    const projects = {};
     this.data.audits.forEach(audit => {
-      const findings = audit.findings || [];
-      const openCount = findings.filter(f => f.status === 'open' || f.status === 'in_progress').length;
+      const projName = audit.projectName || 'MM+';
+      if (!projects[projName]) projects[projName] = [];
+      projects[projName].push(audit);
+    });
+
+    Object.keys(projects).sort().forEach(projName => {
+      // Render Project Group Header
+      const projSection = document.createElement('div');
+      projSection.style.marginBottom = '40px';
       
-      const card = document.createElement('div');
-      card.className = 'file-card audit-card';
-      card.innerHTML = `
-        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-          <h3 class="ac-title">${audit.title}</h3>
-          <button class="icon-btn danger" onclick="event.stopPropagation(); app.deleteAudit('${audit.id}')">
-            <i class="ph ph-trash"></i>
-          </button>
-        </div>
-        <div class="ac-meta">
-          <span><i class="ph ph-folder"></i> ${audit.stream} / ${audit.platform}</span>
-          <span><i class="ph ph-calendar"></i> ${audit.auditDate}</span>
-        </div>
-        <p class="ac-desc">${audit.summary || 'No summary provided.'}</p>
-        <div class="ac-foot">
-          <div class="fc-tags">
-            ${this.getStatusTag(audit.status)}
-            <span class="fc-tag tag-neutral">${findings.length} Findings</span>
-          </div>
-          <span class="ac-stats">${openCount} Open Action Items</span>
-        </div>
+      const projHeader = document.createElement('div');
+      projHeader.innerHTML = `
+        <h2 style="font-family: var(--display); color: var(--ink); margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+          <i class="ph ph-folder" style="color: var(--g500);"></i> ${projName}
+        </h2>
       `;
-      card.addEventListener('click', () => {
-        this.currentAuditId = audit.id;
-        this.navigate('audit-detail');
+      projSection.appendChild(projHeader);
+      
+      const grid = document.createElement('div');
+      grid.style.display = 'grid';
+      grid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(320px, 1fr))';
+      grid.style.gap = '20px';
+      
+      projects[projName].forEach(audit => {
+        const findings = audit.findings || [];
+        const openCount = findings.filter(f => f.status === 'open' || f.status === 'in_progress').length;
+        
+        const card = document.createElement('div');
+        card.className = 'file-card audit-card';
+        card.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <h3 class="ac-title">${audit.title}</h3>
+            <button class="icon-btn danger" onclick="event.stopPropagation(); app.deleteAudit('${audit.id}')">
+              <i class="ph ph-trash"></i>
+            </button>
+          </div>
+          <div class="ac-meta">
+            <span><i class="ph ph-files"></i> ${audit.stream} / ${audit.platform}</span>
+            <span><i class="ph ph-calendar"></i> ${audit.auditDate}</span>
+          </div>
+          <p class="ac-desc">${audit.summary || 'No summary provided.'}</p>
+          <div class="ac-foot">
+            <div class="fc-tags">
+              ${this.getStatusTag(audit.status)}
+              <span class="fc-tag tag-neutral">${findings.length} Findings</span>
+            </div>
+            <span class="ac-stats">${openCount} Open Action Items</span>
+          </div>
+        `;
+        card.addEventListener('click', () => {
+          this.currentAuditId = audit.id;
+          this.navigate('audit-detail');
+        });
+        grid.appendChild(card);
       });
-      list.appendChild(card);
+      
+      projSection.appendChild(grid);
+      list.appendChild(projSection);
     });
   },
 
@@ -500,12 +389,38 @@ const app = {
         const reader = new FileReader();
         reader.onload = (ev) => {
           const base64 = ev.target.result;
-          this.addImageToFinding(findingId, base64);
+          this.compressAndAddImage(findingId, base64);
         };
         reader.readAsDataURL(file);
         return;
       }
     }
+  },
+
+  compressAndAddImage(findingId, base64) {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const MAX_WIDTH = 1600; // Restored high quality now that we have unlimited storage
+      let width = img.width;
+      let height = img.height;
+
+      if (width > MAX_WIDTH) {
+        height = Math.round((height * MAX_WIDTH) / width);
+        width = MAX_WIDTH;
+      }
+
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#FFFFFF'; // ensure transparent bg becomes white, not black
+      ctx.fillRect(0, 0, width, height);
+      ctx.drawImage(img, 0, 0, width, height);
+      
+      const compressedBase64 = canvas.toDataURL('image/jpeg', 0.9); // High quality JPEG
+      this.addImageToFinding(findingId, compressedBase64);
+    };
+    img.src = base64;
   },
 
   addImageToFinding(findingId, base64) {
@@ -515,8 +430,14 @@ const app = {
     if (!finding) return;
     if (!finding.images) finding.images = [];
     finding.images.push(base64);
-    this.saveData();
-    this.renderAuditDetail();
+    
+    try {
+      this.saveData();
+      this.renderAuditDetail();
+    } catch (e) {
+      finding.images.pop(); // Revert the push
+      alert("IndexedDB storage limit reached! Cannot save more images.");
+    }
   },
 
   deleteImage(findingId, imgIdx) {
@@ -600,6 +521,7 @@ const app = {
       const audit = this.data.audits.find(a => a.id === auditId);
       document.getElementById('audit-modal-title').textContent = 'Edit Audit Details';
       document.getElementById('audit-id').value = audit.id;
+      document.getElementById('audit-project').value = audit.projectName || 'MM+';
       document.getElementById('audit-title').value = audit.title;
       document.getElementById('audit-stream').value = audit.stream;
       document.getElementById('audit-platform').value = audit.platform;
@@ -610,6 +532,7 @@ const app = {
     } else {
       document.getElementById('audit-modal-title').textContent = 'New Audit';
       document.getElementById('audit-id').value = '';
+      document.getElementById('audit-project').value = 'MM+';
       document.getElementById('audit-reviewer').value = 'Design Ops';
     }
     this.openModal('audit-modal-overlay');
@@ -619,6 +542,7 @@ const app = {
     e.preventDefault();
     const id = document.getElementById('audit-id').value;
     const data = {
+      projectName: document.getElementById('audit-project').value || 'MM+',
       title: document.getElementById('audit-title').value,
       stream: document.getElementById('audit-stream').value,
       platform: document.getElementById('audit-platform').value,
@@ -722,7 +646,7 @@ const app = {
             const file = item.getAsFile();
             const reader = new FileReader();
             reader.onload = (ev) => {
-              app.addImageToFinding(findingId, ev.target.result);
+              app.compressAndAddImage(findingId, ev.target.result);
             };
             reader.readAsDataURL(file);
             return;

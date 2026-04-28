@@ -25,11 +25,20 @@
         <button class="hdr-btn hdr-btn-export" id="nav-dashboard" onclick="app.navigate('dashboard')" style="display: none;">
           <i class="ph ph-squares-four"></i> Dashboard
         </button>
+        <button class="hdr-btn hdr-btn-export" onclick="app.navigate('strategy')" style="border-color: var(--purple); color: var(--purple);">
+          <i class="ph ph-books"></i> Strategy Guide
+        </button>
+        <a href="action-plan.html" class="hdr-btn hdr-btn-export" style="text-decoration: none; border-color: var(--g400); color: var(--g100);">
+          <i class="ph ph-kanban"></i> Action Plan
+        </a>
         <button class="hdr-btn hdr-btn-export" onclick="app.exportData()">⬇ Export JSON</button>
         <label class="hdr-btn hdr-btn-export" style="cursor:pointer;">
           <i class="ph ph-upload-simple"></i> Import JSON
           <input type="file" id="import-json" accept=".json" style="display: none;" onchange="app.importData(event)">
         </label>
+        <button class="hdr-btn hdr-btn-export" style="border-color: var(--red); color: var(--red);" onclick="if(confirm('Warning: This will wipe all audits and images to free up space. Are you sure?')) { idbKeyval.clear().then(() => { localStorage.clear(); location.reload(); }); }" title="Clear browser storage">
+          <i class="ph ph-trash"></i> Reset Data
+        </button>
         <button class="hdr-btn hdr-btn-add" id="hdr-main-btn" onclick="app.openAuditModal()">＋ New Audit</button>
       </div>
     </div>
@@ -96,6 +105,48 @@
         <!-- Findings populated by JS -->
       </div>
     </section>
+
+    <!-- Comprehensive Strategy Guide View -->
+    <section id="view-strategy" class="view">
+      <div class="legend" style="margin-bottom: 24px; padding: 14px 16px;">
+        <span class="back-link" onclick="app.navigate('dashboard')">
+          <i class="ph ph-arrow-left"></i> Back to Dashboard
+        </span>
+      </div>
+      
+      <div class="file-card" style="padding: 40px; max-width: 900px; margin: 0 auto;">
+        <h1 style="font-family: var(--display); color: var(--purple); margin-bottom: 8px;">Comprehensive Design Ops Strategy</h1>
+        <p style="color: var(--ink4); margin-bottom: 32px; font-size: 14px;">Based on the audit findings for the MM+ Stream. Focus on these core methodologies to reduce design debt.</p>
+
+        <h3 style="font-family: var(--display); margin-top: 32px; color: var(--ink);">1. Atomic Decomposition (Small Elements)</h3>
+        <p style="color: var(--ink3); line-height: 1.6; margin-top: 8px;"><strong>Relevant Findings:</strong> Text pairings, Chips filter & table cells.<br>
+        Currently, foundational elements are being used as plain, detached layers. This causes massive inconsistency if typography or spacing tokens change globally.</p>
+        <div style="background: var(--g50); padding: 16px; border-radius: 8px; margin-top: 12px; border: 1px solid var(--bdr);">
+          <strong>Action:</strong> Rebuild these as Auto Layout components with fixed spacing using strictly defined Typography tokens. Extract them into the Core Design System since chips and text pairings are universally used.
+        </div>
+
+        <h3 style="font-family: var(--display); margin-top: 40px; color: var(--ink);">2. Slot Component Architecture (Complex Containers)</h3>
+        <p style="color: var(--ink3); line-height: 1.6; margin-top: 8px;"><strong>Relevant Findings:</strong> Bottom Sheets, CTA Approval Bars, Pop-up Dialogs.<br>
+        Designers are building these as plain elements because the inner content changes constantly. Creating 50 variants of a Bottom Sheet for every possible form is unsustainable.</p>
+        <div style="background: var(--purple-pale); padding: 16px; border-radius: 8px; margin-top: 12px; border: 1px solid rgba(120,80,200,0.2);">
+          <strong>Action:</strong> Build ONE master component for the container. Place a generic "Slot" component (a dashed frame) inside it. Train designers to build specific content locally, then use <em>Instance Swap</em> to inject their local component into the slot. No detaching required.
+        </div>
+
+        <h3 style="font-family: var(--display); margin-top: 40px; color: var(--ink);">3. Surfacing Nested Properties</h3>
+        <p style="color: var(--ink3); line-height: 1.6; margin-top: 8px;"><strong>Relevant Findings:</strong> Deep clicking problem in log component.<br>
+        When components are nested too deeply, Product Designers waste time double-clicking down the layer tree just to change a state.</p>
+        <div style="background: var(--g50); padding: 16px; border-radius: 8px; margin-top: 12px; border: 1px solid var(--bdr);">
+          <strong>Action:</strong> Use Figma's "Nested Instances" feature on the top-level parent component. Check the box for the nested indicator component to surface its properties immediately on the parent's property panel.
+        </div>
+
+        <h3 style="font-family: var(--display); margin-top: 40px; color: var(--ink);">4. Local UI Kit Establishment</h3>
+        <p style="color: var(--ink3); line-height: 1.6; margin-top: 8px;"><strong>Relevant Findings:</strong> Components used locally, Using components from another file.<br>
+        Designers are directly linking to components inside other feature files (e.g., linking to Registration Flow). This creates spaghetti dependencies that break easily.</p>
+        <div style="background: var(--blue-pale); padding: 16px; border-radius: 8px; margin-top: 12px; border: 1px solid rgba(80,160,240,0.2);">
+          <strong>Action:</strong> Establish a dedicated Local UI Kit file for this stream. Move all local components there. Do not cross-link feature files.
+        </div>
+      </div>
+    </section>
   </div>
 
   <!-- Modals -->
@@ -105,8 +156,12 @@
       <form id="audit-form" onsubmit="app.saveAudit(event)">
         <input type="hidden" id="audit-id">
         <div class="mf">
-          <div class="ml">Audit Title *</div>
-          <input class="mi" type="text" id="audit-title" required placeholder="e.g. MM+ Aktivitas Promosi FA Audit">
+          <div class="ml">Project Name * <span style="color:var(--g500);font-weight:400;font-size:11px;">(e.g. MM+, Maxxi Agri)</span></div>
+          <input class="mi" type="text" id="audit-project" required placeholder="Project Name" value="MM+">
+        </div>
+        <div class="mf">
+          <div class="ml">File Title *</div>
+          <input class="mi" type="text" id="audit-title" required placeholder="e.g. Aktivitas Promosi FA">
         </div>
         <div style="display:flex; gap:12px;">
           <div class="mf" style="flex:1;">
@@ -250,6 +305,7 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/idb-keyval@6/dist/umd.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
